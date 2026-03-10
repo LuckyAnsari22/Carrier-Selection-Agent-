@@ -1,0 +1,88 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+dist/
+build/
+venv/
+.env
+_test_import.py
+test_err.log
+
+# Node
+node_modules/
+frontend/node_modules/
+
+# IDE
+.vscode/
+.idea/
+
+# Data & logs
+*.db
+*.sqlite
+data/
+backend/data/
+backend_log.txt
+error_log.txt
+all_models.txt
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Misc
+*.zip
+.gemini/
+.agents/
+.agent/
+_agents/
+_agent/
+
+# Unnecessary docs (as requested)
+CARRIERIQ_100X_UPGRADE.md
+CARRIERIQ_WINNER_GUIDE (1).md
+CARRIERIQ_WINNER_GUIDE.md
+DEVELOPMENT.md
+DOCS_INDEX.md
+FRONTEND_MASTERPLAN.md
+INSTALLATION.md
+SETUP_COMPLETE.md
+QUICKSTART.md
+API_REFERENCE.md
+ARCHITECTURE.md
+all_models.txt
+analyze_mlops.py
+carrier_research.py
+check_20_quota.py
+check_settings.py
+debug_422.py
+debug_settings.py
+find_working_model.py
+generation_models.txt
+langgraph_pipeline.py
+list_models.py
+models.txt
+quick_test.py
+scenario_test.py
+test_all_whatif.py
+test_api.py
+test_bid_normalizer.py
+test_dashboard_api.py
+test_feedback_integration.py
+test_gemini.py
+test_output.txt
+test_pipeline.py
+test_whatif.py
+tmp_check.py
+tmp_reliability_check.py
+tmp_run.py
+verify_feedback_db.py
+verify_model.py
+run.ps1
+run.sh
+run_backend.bat
+run_backend.sh
+run_demo.sh
+backend_log_utf8.txt
