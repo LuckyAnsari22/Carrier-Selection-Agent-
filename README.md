@@ -1,95 +1,47 @@
-# 🚛 CarrierIQ v3: The Intelligent Carrier Selection Co-Pilot
+# CarrierIQ: Solving the Chaos of Freight Procurement
 
-> **Transforming high-stakes freight procurement from gut-instinct spreadsheets into a mathematically-rigorous, multi-agent intelligence system.**
+Most people don't realize that nearly $1 trillion of freight is moved every year using nothing but gut instinct and messy Excel sheets. I built **CarrierIQ** to fix that. 
 
-[![Production Ready](https://img.shields.io/badge/Status-Production--Ready-blueviolet?style=for-the-badge&logo=github)](https://github.com/LuckyAnsari22/Carrier-Selection-Agent-)
-[![Stack](https://img.shields.io/badge/Stack-Gemini--2.5--Flash_|_FastAPI_|_React_|_XGBoost-orange?style=for-the-badge)](https://github.com/LuckyAnsari22/Carrier-Selection-Agent-)
-
----
-
-## 🏆 The "Winner's" Edge: Why CarrierIQ?
-In a market where procurement teams spend **$1.2 Trillion** annually using stagnant Excel files, CarrierIQ introduces a **100x shift**. It is not just a dashboard; it is a **Decision Orchestration Layer** that brings academic multi-criteria decision-making (MCDM) and multi-agent strategic reasoning to the logistics boardroom.
-
-### 💎 Key Strategic Innovations
-1. **Multi-Agent Debate Protocol:** Instead of a single LLM output, CarrierIQ simulates a real-world procurement strategy meeting. Specialized agents (**Marcus: The Cost Expert** and **Dr. Amara: The Reliability Lead**) debate carrier merits while a **Judge Agent** synthesizes a balanced, objective award recommendation.
-2. **The TOPSIS + XGBoost Hybrid:** We don't just score carriers; we calculate their "Similarity to the Ideal Solution." Our engine combines **XGBoost predictive delay modeling** (94.3% accuracy) with **TOPSIS mathematical ranking** to provide an scientifically defensible leaderboard.
-3. **Audit-Ready SHAP Explainer:** We solve the "AI Black Box" problem. Every rank comes with a **SHAP waterfall narrative**, mathematically explaining why a carrier moved up or down (e.g., *"Selected Carrier X because their damage-rate score offset their 2% price premium"*).
-4. **Visual Intelligence:** A high-fidelity **3D Supply Chain Globe** (Three.js/Fiber) that visualizes network health in real-time—turning massive data silos into immediate visual intuition.
+It's an intelligent selection engine that doesn't just rank carriers—it simulates a real boardroom decision. I combined mathematical ranking (TOPSIS) with predictive machine learning (XGBoost) so that logistics teams can finally stop guessing and start using data that actually makes sense.
 
 ---
 
-## 🎨 System Architecture
+### Why I built this
+Procurement teams face a "Black Box" problem. They have plenty of data (OTD rates, costs, damages), but they have no way to weight them fairly. 
+1. **Tribal Knowledge:** Logic like "don't use Carrier X during monsoon" stays in people's heads. If they leave, the company loses that intelligence.
+2. **Analysis Paralysis:** It takes days to normalize bids from different carriers.
+3. **Black Box AI:** Most AI tools just give a "score" with no explanation. No one trusts a score they can't verify.
 
-```mermaid
-graph TD
-    subgraph "Raw Signal Ingestion"
-        DS1[TMS / ERP Silos]
-        DS2[Inconsistent Bid Submissions]
-        DS3[Live Market News & Sentiment]
-    end
+### How it Works (The Tech)
+I structured the backend to mirror a real-world procurement board using a **Multi-Agent Debate** system:
+*   **The Cost Agent (Marcus):** Only cares about the bottom line and saving money.
+*   **The Reliability Agent (Amara):** Only cares about network health, OTD, and damage prevention.
+*   **The Judge:** Listens to both agents, reviews the ML risk predictions, and makes the final, balanced award.
 
-    subgraph "Core Intelligence: The Agentic Board"
-        AG1[Marcus Chen: Cost Analyst]
-        AG2[Dr. Amara: Risk Specialist]
-        AG3[Judge: Final Award Engine]
-        AG4[XGBoost Forecasting Engine]
-    end
+Under the hood, I'm using **XGBoost** to forecast delay risks (currently hitting ~94% accuracy) and **TOPSIS** (a multi-criteria decision-making method) to ensure the rankings aren't just arbitrary.
 
-    subgraph "The Insight Layer"
-        UI1[3D Network Health Globe]
-        UI2[Live Agent Debate Stream]
-        UI3[What-If Scenario Modeler]
-    end
+---
 
-    DS1 --> AG4
-    DS2 --> AG1
-    DS3 --> AG2
-    
-    AG4 --> AG1
-    AG4 --> AG2
-    
-    AG1 --> AG3
-    AG2 --> AG3
-    
-    AG3 --> UI2
-    AG4 --> UI1
-    AG3 --> UI3
+### Core Features I focused on:
+*   **3D Visual Intuition:** I built a 3D Supply Chain Globe using Three.js/Fiber. Healthy lanes glow green, at-risk ones turn orange. It turns a spreadsheet into something you can see.
+*   **SHAP Explanations:** Every carrier rank comes with a "Why". It explains in plain English exactly which factors moved a carrier to the top spot.
+*   **What-If Simulator:** You can drag sliders to shift priorities. If you need to pivot from "Cost Savings" to "Service Protection" because of a strike, you can see the new rankings in under 50ms.
+*   **Automated Research:** The agents use live market signals (news, fuel spikes, weather) to adjust rankings before a problem even hits your supply chain.
+
+---
+
+### The Stack
+I kept it modern and fast:
+*   **Backend:** FastAPI (Python) for the core logic and ML.
+*   **Intelligence:** Google Gemini 2.5 (for the strategic agent debate).
+*   **ML Engine:** XGBoost for risk and SHAP for explainability.
+*   **Frontend:** React 18 / Vite.
+*   **Visuals:** Three.js & Framer Motion for the UI.
+
+### Getting Started
+I've fully Dockerized the project so you can run the whole stack (Backend + Frontend) with one command:
+```bash
+docker-compose up --build
 ```
 
----
-
-## 📊 Measurable Impact (Benchmarks)
-
-| KPI | Legacy (Manual/Excel) | **CarrierIQ v3** | Improvement |
-| :--- | :--- | :--- | :--- |
-| **Decision Cycle Time** | 3–7 Business Days | **47 Seconds** | 🚀 99.9% Faster |
-| **Scoring Consistency** | Subjective / Fragmented | **TOPSIS Mathematical** | ✅ 100% Unbiased |
-| **Forecasting Accuracy** | ~60% (Tribal Knowledge) | **94.3% (XGBoost)** | 💡 High Precision |
-| **Spend Recovery** | 0% (Unknown) | **12–18% of spend** | 💰 Avg. $276K/yr |
-
----
-
-## ⚡ Killer Features
-
-*   **What-If Simulator:** Instantly re-rank 30+ carriers by dragging priority sliders for Cost, Reliability, and Speed. Watch the entire network re-align in **<50ms**.
-*   **Gemini-Powered Research:** Deep-scans live global data for strikes, weather, and fuel spikes using high-speed agentic loops.
-*   **Predictive Risk Defense:** Detects "Predatory Pricing" and "Financial Distress" in carrier bids before they disrupt your supply chain.
-
----
-
-## 🛳️ Implementation & Deployment
-CarrierIQ is built for **Production Scalability**.
-
-*   **Backend:** FastAPI with Pydantic v2 schemas and optimized NumPy/XGBoost serialization.
-*   **Frontend:** React 18 with Vite, Three.js/Fiber for 3D, and Zustand for state management.
-*   **Cloud Ready:** Fully Dockerized (`docker-compose up --build`) and Vercel-optimized for one-click global deployment.
-
----
-
-## 🔭 The Vision: Autonomous Procurement 
-CarrierIQ is the foundation for the "Agent with a Wallet." Our roadmap leads to a future where agents don't just recommend selections—they autonomously negotiate rates and execute contracts based on real-time market fluctuations.
-
----
-
-**CarrierIQ: Precision Decisions in a Volatile World.**
-Developed with a focus on **Strategic Impact, Mathematical Rigor, and Premium UX.**
+Developed with a focus on **logic, math, and making complex data actually usable.**
