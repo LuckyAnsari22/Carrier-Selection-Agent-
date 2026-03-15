@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import axios from 'axios'
+import { scoreCarriers, runFeedbackAnalysis, submitFeedback as apiSubmitFeedback } from '../api/client'
 import GlassCard from '../components/shared/GlassCard'
 import GlowButton from '../components/shared/GlowButton'
-
-const API_BASE = '/api'
 
 export default function MLOpsFeedback() {
     const [carriers, setCarriers] = useState([])
@@ -24,7 +22,7 @@ export default function MLOpsFeedback() {
     const fetchAnalysis = async () => {
         setLoading(true)
         try {
-            const res = await axios.get(`${API_BASE}/feedback/analysis`)
+            const res = await runFeedbackAnalysis()
             setAnalysis(res.data)
         } catch (err) {
             console.error(err)
@@ -37,7 +35,7 @@ export default function MLOpsFeedback() {
         fetchAnalysis()
         const fetchCarriers = async () => {
             try {
-                const res = await axios.get(`${API_BASE}/score`)
+                const res = await scoreCarriers()
                 setCarriers(res.data.carriers)
                 if (res.data.carriers.length > 0) {
                     setOutcomeData(prev => ({ ...prev, carrier_id: res.data.carriers[0].carrier_id }))
@@ -50,7 +48,7 @@ export default function MLOpsFeedback() {
     const handleSubmitOutcome = async () => {
         setSubmitting(true)
         try {
-            await axios.post(`${API_BASE}/feedback/`, outcomeData)
+            await apiSubmitFeedback(outcomeData)
             alert('Outcome recorded. MLOps feedback loop updated.')
             fetchAnalysis()
         } catch (err) { console.error(err) }

@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import axios from 'axios'
+import { scoreCarriers, runAwardStrategy } from '../api/client'
 import GlassCard from '../components/shared/GlassCard'
 import GlowButton from '../components/shared/GlowButton'
-
-const API_BASE = '/api'
 
 export default function AwardStrategy() {
     const [carriers, setCarriers] = useState([])
@@ -23,13 +21,13 @@ export default function AwardStrategy() {
     useEffect(() => {
         const fetchCarriers = async () => {
             try {
-                const res = await axios.get(`${API_BASE}/score`)
-                setCarriers(res.data.carriers)
-                if (res.data.carriers.length > 0) {
+                const res = await scoreCarriers()
+                setCarriers(res.data.rankings)
+                if (res.data.rankings.length > 0) {
                     setFormData(prev => ({
                         ...prev,
-                        priority_carrier_id: res.data.carriers[0].carrier_id,
-                        secondary_carrier_id: res.data.carriers[1]?.carrier_id || ''
+                        priority_carrier_id: res.data.rankings[0].carrier_id,
+                        secondary_carrier_id: res.data.rankings[1]?.carrier_id || ''
                     }))
                 }
             } catch (err) { console.error(err) }
@@ -41,7 +39,7 @@ export default function AwardStrategy() {
     const designStrategy = async () => {
         setLoading(true)
         try {
-            const res = await axios.post(`${API_BASE}/award_strategy/`, formData)
+            const res = await runAwardStrategy(formData)
             setStrategy(res.data)
         } catch (err) { console.error(err) }
         finally { setLoading(false) }

@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { gsap } from 'gsap';
-import { Microphone } from 'lucide-react';
+import { Mic } from 'lucide-react';
 
 const Shell = ({
   children,
@@ -85,7 +85,7 @@ const Shell = ({
               onClick={onMicToggle}
               className={`p-1 rounded-full ${voiceActive ? 'bg-neon' : 'hover:bg-brand-border'}`}
             >
-              <Microphone className="w-4 h-4 text-white" />
+              <Mic className="w-4 h-4 text-white" />
             </button>
           </div>
         </div>

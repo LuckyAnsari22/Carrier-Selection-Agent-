@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { AlertCircle, Clock, Network, WarningIcon } from 'lucide-react';
+import { AlertCircle, Clock, Network, AlertTriangle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import useCarrierStore from '../store/useCarrierStore';
 
 // mock data
 const summary = [
-  { label: 'Overextended', value: 8, color: 'rose', icon: WarningIcon },
+  { label: 'Overextended', value: 8, color: 'rose', icon: AlertTriangle },
   { label: 'High Damage', value: 3, color: 'warning', icon: AlertCircle },
   { label: 'Delay Prone', value: 5, color: 'orange', icon: Clock },
   { label: 'Network: 47% Concentrated', value: null, color: 'purple', icon: Network }

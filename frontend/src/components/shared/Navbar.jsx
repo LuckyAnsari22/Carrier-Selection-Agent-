@@ -6,11 +6,13 @@ const NAV_LINKS = [
   { path: '/dashboard', label: 'Monitor', icon: '📊' },
   { path: '/normalize', label: 'Bids', icon: '📋' },
   { path: '/whatif', label: 'Simulate', icon: '🧪' },
-  { path: '/summary', label: 'Briefing', icon: '📑' },
+  { path: '/summary', label: 'Summarizer', icon: '📑' },
   { path: '/feedback-loop', label: 'MLOps', icon: '📈' },
-  { path: '/financial-health', label: 'Audit', icon: '🏦' },
-  { path: '/award-strategy', label: 'Portfolio', icon: '💎' },
+  { path: '/financial-health', label: 'Auditor', icon: '🏦' },
+  { path: '/award-strategy', label: 'Strategist', icon: '💎' },
   { path: '/qbr', label: 'QBR', icon: '🗓️' },
+  { path: '/risk-research', label: 'Researcher', icon: '🔍' },
+  { path: '/pipeline', label: 'Pipeline', icon: '🧬' },
 ]
 
 export default function Navbar() {

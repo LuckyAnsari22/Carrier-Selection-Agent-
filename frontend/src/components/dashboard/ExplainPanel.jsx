@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import GlassCard from '../shared/GlassCard'
 import { motion, AnimatePresence } from 'framer-motion'
 import useCarrierStore from '../../store/useCarrierStore'
-import axios from 'axios'
+import { explainScore } from '../../api/client'
 
 export default function ExplainPanel() {
   const { selectedCarrier } = useCarrierStore()
@@ -24,7 +24,7 @@ export default function ExplainPanel() {
 
     setLoading(true)
 
-    axios.get(`/api/explain/${carrierId}`)
+    explainScore(carrierId)
       .then(res => {
         const data = res.data
         const features = data.features || {}

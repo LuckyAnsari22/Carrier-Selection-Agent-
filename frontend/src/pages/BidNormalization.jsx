@@ -1,10 +1,8 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import axios from 'axios'
+import { runNormalization } from '../api/client'
 import GlassCard from '../components/shared/GlassCard'
 import GlowButton from '../components/shared/GlowButton'
-
-const API_BASE = '/api'
 
 export default function BidNormalization() {
     const [rawText, setRawText] = useState('')
@@ -18,7 +16,7 @@ export default function BidNormalization() {
         setLoading(true)
         setError(null)
         try {
-            const response = await axios.post(`${API_BASE}/normalize/`, {
+            const response = await runNormalization({
                 raw_submissions: rawText
             })
             setResults(response.data)

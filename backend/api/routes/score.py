@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Request
-from pydantic import BaseModel
-from typing import List, Dict
+from pydantic import BaseModel, Field
+from typing import List, Dict, Optional
 import json
 import pandas as pd
 
@@ -9,27 +9,92 @@ router = APIRouter()
 
 import uuid
 import time
-from typing import Optional
 
 # Ticket cache: id -> {data: ..., expiry: ...}
 STREAM_TICKETS: Dict[str, dict] = {}
 
 
+class CarrierData(BaseModel):
+    """Carrier data model with required fields."""
+    carrier_id: str = Field(..., description="Unique carrier identifier")
+    carrier_name: str = Field(..., description="Carrier company name")
+    tier: str = Field(..., description="Carrier tier (Premium, Standard, Budget)")
+    cost_per_km: float = Field(..., description="Cost per kilometer")
+    ontime_pct: float = Field(..., description="On-time delivery percentage (0-100)")
+    damage_rate: float = Field(..., description="Damage rate (lower is better)")
+    capacity_utilization: float = Field(..., description="Capacity utilization (0-1)")
+    rating: float = Field(..., description="Rating (0-5)")
+    years_experience: int = Field(..., description="Years in operation")
+    routes_covered: int = Field(..., description="Number of routes covered")
+    transit_consistency: float = Field(..., description="Transit consistency (0-1)")
+    avg_delay_hours: float = Field(..., description="Average delay in hours")
+    claims_last_month: int = Field(..., description="Number of claims last month")
+
+
 class ScoreRequest(BaseModel):
-    lane: Optional[str] = "Global Lane"
-    carriers: Optional[List[Dict]] = None
-    priorities: Optional[Dict[str, float]] = None
+    """Request model for carrier scoring API."""
+    lane: Optional[str] = Field("Global Lane", description="Lane/route description")
+    carriers: Optional[List[CarrierData]] = Field(None, description="List of carriers to score")
+    priorities: Optional[Dict[str, float]] = Field(
+        None, 
+        description="Priority weights: cost, reliability, speed, quality (should sum to 1.0)"
+    )
     # Support for v2 flat structure
-    cost: Optional[int] = None
-    reliability: Optional[int] = None
-    speed: Optional[int] = None
-    quality: Optional[int] = None
+    cost: Optional[int] = Field(None, description="Cost priority slider (0-100)")
+    reliability: Optional[int] = Field(None, description="Reliability priority slider (0-100)")
+    speed: Optional[int] = Field(None, description="Speed priority slider (0-100)")
+    quality: Optional[int] = Field(None, description="Quality priority slider (0-100)")
+    
+    class Config:
+        schema_extra = {
+            "example": {
+                "lane": "Mumbai → Delhi",
+                "carriers": [
+                    {
+                        "carrier_id": "C001",
+                        "carrier_name": "Fast Haul Express",
+                        "tier": "Premium",
+                        "cost_per_km": 2.50,
+                        "ontime_pct": 96.0,
+                        "damage_rate": 0.2,
+                        "capacity_utilization": 0.78,
+                        "rating": 4.8,
+                        "years_experience": 12,
+                        "routes_covered": 120,
+                        "transit_consistency": 0.95,
+                        "avg_delay_hours": 1.5,
+                        "claims_last_month": 2
+                    },
+                    {
+                        "carrier_id": "C002",
+                        "carrier_name": "SafeRoute Logistics",
+                        "tier": "Premium",
+                        "cost_per_km": 3.20,
+                        "ontime_pct": 98.0,
+                        "damage_rate": 0.1,
+                        "capacity_utilization": 0.85,
+                        "rating": 4.9,
+                        "years_experience": 15,
+                        "routes_covered": 150,
+                        "transit_consistency": 0.97,
+                        "avg_delay_hours": 0.8,
+                        "claims_last_month": 1
+                    }
+                ],
+                "priorities": {
+                    "cost": 0.40,
+                    "reliability": 0.35,
+                    "speed": 0.15,
+                    "quality": 0.10
+                }
+            }
+        }
 
 
 class StreamTicketRequest(BaseModel):
-    lane: str
-    carriers: List[Dict]
-    priorities: Dict[str, float]
+    lane: Optional[str] = Field("Global Lane", description="Lane/route description")
+    carriers: Optional[List[CarrierData]] = Field(None, description="List of carriers to score")
+    priorities: Optional[Dict[str, float]] = Field(None, description="Priority weights")
 
 
 @router.get("")
@@ -114,13 +179,19 @@ async def score_carriers(request: ScoreRequest, fast_api_request: Request):
 
 
 @router.post("/ticket")
-async def create_stream_ticket(request: StreamTicketRequest):
+async def create_stream_ticket(request: StreamTicketRequest, fast_api_request: Request):
     """Store large carrier data temporarily to avoid 431 errors in SSE."""
     ticket_id = str(uuid.uuid4())
+    
+    # Use provided data or fallback to app state
+    carriers_list = request.carriers if request.carriers else None
+    priorities_dict = request.priorities if request.priorities else {"cost": 0.35, "reliability": 0.30, "speed": 0.20, "quality": 0.15}
+    lane_name = request.lane if request.lane else "Global Lane"
+    
     STREAM_TICKETS[ticket_id] = {
-        "lane": request.lane,
-        "carriers": request.carriers,
-        "priorities": request.priorities,
+        "lane": lane_name,
+        "carriers": carriers_list,
+        "priorities": priorities_dict,
         "expiry": time.time() + 600  # 10 minutes
     }
     
@@ -138,7 +209,8 @@ async def stream_scores(
     lane: Optional[str] = None, 
     carriers: Optional[str] = None, 
     priorities: Optional[str] = None,
-    ticket_id: Optional[str] = None
+    ticket_id: Optional[str] = None,
+    fast_api_request: Request = None
 ):
     """Score carriers and stream real-time agent debate (SSE)."""
     from core.pipeline import run_agent_pipeline
@@ -149,9 +221,17 @@ async def stream_scores(
             carriers_list = ticket["carriers"]
             priorities_dict = ticket["priorities"]
         else:
-            lane_name = lane
-            carriers_list = json.loads(carriers) if carriers else []
-            priorities_dict = json.loads(priorities) if priorities else {}
+            lane_name = lane or "Global Lane"
+            carriers_list = json.loads(carriers) if carriers else None
+            priorities_dict = json.loads(priorities) if priorities else {"cost": 0.35, "reliability": 0.30, "speed": 0.20, "quality": 0.15}
+        
+        # If no carriers provided, use app state carriers
+        if not carriers_list:
+            df = getattr(fast_api_request.app.state, "df", None) if fast_api_request else None
+            if df is not None:
+                carriers_list = df.to_dict('records')
+            else:
+                carriers_list = []
             
         async def event_generator():
             try:

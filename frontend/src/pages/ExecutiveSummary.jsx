@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import axios from 'axios'
+import { scoreCarriers, runExecutiveSummary } from '../api/client'
 import GlassCard from '../components/shared/GlassCard'
 import GlowButton from '../components/shared/GlowButton'
-
-const API_BASE = '/api'
 
 export default function ExecutiveSummary() {
     const [carriers, setCarriers] = useState([])
@@ -26,13 +24,14 @@ export default function ExecutiveSummary() {
     useEffect(() => {
         const fetchCarriers = async () => {
             try {
-                const res = await axios.get(`${API_BASE}/score`)
-                setCarriers(res.data.carriers)
-                if (res.data.carriers.length > 0) {
+                const res = await scoreCarriers()
+                const carrierList = res.data.carriers || res.data.rankings || []
+                setCarriers(carrierList)
+                if (carrierList.length > 0) {
                     setFormData(prev => ({
                         ...prev,
-                        primary_carrier_id: res.data.carriers[0].carrier_id,
-                        secondary_carrier_id: res.data.carriers[1]?.carrier_id || ''
+                        primary_carrier_id: carrierList[0].carrier_id,
+                        secondary_carrier_id: carrierList[1]?.carrier_id || ''
                     }))
                 }
             } catch (err) {
@@ -47,7 +46,7 @@ export default function ExecutiveSummary() {
     const handleGenerate = async () => {
         setLoading(true)
         try {
-            const res = await axios.post(`${API_BASE}/summary/`, formData)
+            const res = await runExecutiveSummary(formData)
             setSummary(res.data.summary)
         } catch (err) {
             console.error(err)

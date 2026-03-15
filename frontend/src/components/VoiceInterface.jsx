@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Microphone } from 'lucide-react';
+import { Mic } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const PRESETS = [
@@ -85,7 +85,7 @@ export default function VoiceInterface() {
           className="w-20 h-20 rounded-full bg-gradient-to-br from-brand-primary to-brand-secondary flex items-center justify-center relative"
           onClick={listening ? stopListening : startListening}
         >
-          <Microphone className="w-8 h-8 text-white" />
+          <Mic className="w-8 h-8 text-white" />
         </button>
         {listening && (
           <span className="absolute inset-0 rounded-full border-4 border-brand-secondary animate-pulse"></span>

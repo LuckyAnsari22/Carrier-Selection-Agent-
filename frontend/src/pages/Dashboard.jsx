@@ -94,7 +94,22 @@ export default function Dashboard() {
       const ticketRes = await createStreamTicket(carriers, priorities, laneName)
       const ticketId = ticketRes.data.ticket_id
 
-      // 3. Start SSE debate
+      // 3. Start SSE debate (Mocked if ticketId is mock)
+      if (ticketId === 'mock-ticket-123') {
+        const mockMessages = [
+          { agent: 'Cost Optimizer', content: "Initial analysis of the Mumbai-Delhi corridor indicates that EliteShip Corp provides the best value-to-cost ratio..." },
+          { agent: 'Reliability Guardian', content: "Confirmed. TransCo Express and EliteShip have maintained 98%+ OTD for the last 4 quarters..." },
+          { agent: 'Procurement Judge', content: "Based on current priorities, EliteShip is the optimal strategic choice..." }
+        ];
+        
+        for (const msg of mockMessages) {
+          await new Promise(r => setTimeout(r, 1000));
+          addAgentMessage(msg);
+        }
+        setAnalyzing(false);
+        return;
+      }
+
       const streamUrl = streamAnalysis(ticketId)
       const eventSource = new EventSource(streamUrl)
       streamRef.current = eventSource

@@ -9,6 +9,8 @@ import FeedbackLoop from './pages/FeedbackLoop'
 import FinancialHealth from './pages/FinancialHealth'
 import AwardStrategy from './pages/AwardStrategy'
 import QBRScorecard from './pages/QBRScorecard'
+import RiskIntel from './pages/RiskIntel'
+import Pipeline from './pages/Pipeline'
 import Navbar from './components/shared/Navbar'
 
 const queryClient = new QueryClient()
@@ -30,6 +32,8 @@ export default function App() {
             <Route path="/financial-health" element={<FinancialHealth />} />
             <Route path="/award-strategy" element={<AwardStrategy />} />
             <Route path="/qbr" element={<QBRScorecard />} />
+            <Route path="/risk-research" element={<RiskIntel />} />
+            <Route path="/pipeline" element={<Pipeline />} />
           </Routes>
         </div>
       </BrowserRouter>

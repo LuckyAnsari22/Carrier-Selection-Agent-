@@ -1,10 +1,8 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import axios from 'axios'
+import { runSimulation as apiRunSimulation } from '../api/client'
 import GlassCard from '../components/shared/GlassCard'
 import GlowButton from '../components/shared/GlowButton'
-
-const API_BASE = '/api'
 
 const SCENARIOS = [
     {
@@ -58,7 +56,7 @@ export default function WhatIfSimulator() {
         setError(null)
 
         try {
-            const response = await axios.post(`${API_BASE}/whatif/`, {
+            const response = await apiRunSimulation({
                 scenario_name: scenario.name,
                 weights: scenario.weights,
                 filters: scenario.filters

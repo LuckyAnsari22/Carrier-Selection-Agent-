@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion'
 
-export default function GlassCard({ children, className = '', glow = false, glowColor = '#00FF88' }) {
+export default function GlassCard({ children, className = '', glow = false, glowColor = '#00FF88', ...props }) {
   return (
     <motion.div
+      {...props}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className={`

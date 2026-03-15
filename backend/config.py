@@ -1,6 +1,10 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pathlib import Path
 import itertools
+import os
+
+# Look for .env in parent directory (project root)
+env_path = Path(__file__).parent.parent / ".env"
 
 class Settings(BaseSettings):
     GEMINI_API_KEY: str = ""
@@ -17,7 +21,7 @@ class Settings(BaseSettings):
     DEBUG: bool = False
     
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=str(env_path),
         extra="ignore",
         case_sensitive=False
     )

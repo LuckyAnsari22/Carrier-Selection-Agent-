@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import axios from 'axios'
+import { scoreCarriers, runFinancialAudit } from '../api/client'
 import GlassCard from '../components/shared/GlassCard'
 import GlowButton from '../components/shared/GlowButton'
-
-const API_BASE = '/api'
 
 export default function FinancialHealth() {
     const [carriers, setCarriers] = useState([])
@@ -16,10 +14,11 @@ export default function FinancialHealth() {
     useEffect(() => {
         const fetchCarriers = async () => {
             try {
-                const res = await axios.get(`${API_BASE}/score`)
-                setCarriers(res.data.carriers)
-                if (res.data.carriers.length > 0) {
-                    setSelectedId(res.data.carriers[0].carrier_id)
+                const res = await scoreCarriers()
+                const carrierList = res.data.carriers || res.data.rankings || []
+                setCarriers(carrierList)
+                if (carrierList.length > 0) {
+                    setSelectedId(carrierList[0].carrier_id)
                 }
             } catch (err) {
                 console.error(err)
@@ -33,7 +32,7 @@ export default function FinancialHealth() {
     const runAudit = async () => {
         setLoading(true)
         try {
-            const res = await axios.post(`${API_BASE}/financial_health/`, {
+            const res = await runFinancialAudit({
                 carrier_id: selectedId
             })
             setAssessment(res.data)
